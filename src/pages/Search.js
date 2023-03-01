@@ -8,9 +8,8 @@ import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navigation from "../components/Navbar";
 
-var OW = "7caac9e6166772127226ad6470b80a57";
-
 function WeatherCard(props) {
+  const d = new Date(props.dt);
   const low = css`
     color: blue;
   `;
@@ -25,7 +24,7 @@ function WeatherCard(props) {
 
   const styles = css`
     :root {
-      --skin: #f2b383;
+      --skin: #f8d9c1;
       --border: #483b55;
       --tshirt1: teal;
       --tshirt2: tomato;
@@ -52,28 +51,15 @@ function WeatherCard(props) {
     }
 
     .body {
-      background: #f2b383;
+      background: #f8d9c1;
     }
 
     .illustration {
       position: relative;
-      height: 100vh;
+      min-height: 790px;
       z-index: 1;
       margin: auto;
       top: 0;
-      &:before {
-        content: "";
-        background: #483b55;
-        width: 30vh;
-        height: 1vh;
-        position: absolute;
-        margin: auto;
-        left: 0;
-        right: 0;
-        bottom: 22vh;
-        border-radius: 50%;
-        opacity: 0.6;
-      }
     }
 
     .head {
@@ -90,7 +76,7 @@ function WeatherCard(props) {
       border-radius: 50% 50% 0 0 / 60% 60% 0 0;
       background: #faf0be;
       width: 100%;
-      height: 90%;
+      height: 100%;
       top: 10%;
     }
 
@@ -121,7 +107,7 @@ function WeatherCard(props) {
     }
 
     .face-up {
-      background: #f2b383;
+      background: #f8d9c1;
       height: 2vh;
       width: 7vh;
       top: 7.25vh;
@@ -135,7 +121,7 @@ function WeatherCard(props) {
       height: 1vh;
       border-radius: 0 0 0.75vh 0.75vh;
       border: 0.25vh solid #483b5555;
-      border-top-color: #f2b383;
+      border-top-color: #f8d9c1;
     }
     .lips {
       border-bottom: 2px solid;
@@ -172,7 +158,7 @@ function WeatherCard(props) {
       height: 3.5vh;
       width: 2vh;
       top: 12.5vh;
-      border-bottom-color: #f2b383;
+      border-bottom-color: #f8d9c1;
       z-index: 1;
     }
 
@@ -186,21 +172,13 @@ function WeatherCard(props) {
       border-radius: 0 0 50% 50% / 0 0 100% 100%;
     }
     .dress {
-      background: tomato;
-      background-image: linear-gradient(
-        to bottom,
-        teal,
-        teal 50%,
-        tomato 50%,
-        tomato
-      );
+      background: red;
       clip-path: polygon(30% 0%, 70% 0, 100% 100%, 0 100%);
       background-position: bottom center;
       background-size: 100% 2vh;
       height: 22vh;
       width: 11vh;
       top: 29.5vh;
-      box-shadow: inset 0 10px 3vh #483b55;
       z-index: 1;
       transform-origin: center top;
     }
@@ -219,12 +197,12 @@ function WeatherCard(props) {
     .arm-l {
       transform-origin: right top;
       right: calc(50% + 2vh);
-      transform: rotate(-45deg);
+      transform: rotate(-60deg);
     }
     .arm-r {
       transform-origin: left top;
       left: calc(50% + 2vh);
-      transform: rotate(45deg);
+      transform: rotate(60deg);
     }
     .me {
       z-index: 0;
@@ -270,17 +248,40 @@ function WeatherCard(props) {
   `;
 
   var rainMessage =
-    "It's likely that it's going to rain, might wanna bring an umbrella or jacket.";
+    "It's likely that it's going to rain, might wanna bring an umbrella or rainjacket.";
+
+  var temperatureMessage = "";
+  if (props.feels_like < 32) {
+    temperatureMessage =
+      "Ooh! It's freezing out here -- make sure to bundle up. Wear a cool jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
+  } else if (props.feels_like < 55) {
+    temperatureMessage =
+      "Pretty cold out here, so light layers will be your best friend. Put on some cute jeans, a long sleeve, and a cute jacket to top it off. ";
+  } else if (props.feels_like < 70) {
+    temperatureMessage =
+      "Not bad weather. Cute light sweater would be nice. Maybe pair it with a nice pair of pants or with a skirt and add some tights for extra warmth";
+  } else if (props.feels_like < 83) {
+    temperatureMessage =
+      "Nice weather. Maybe wear a nice dress or just comfy pants and a cute shirt.";
+  } else if (props.feels_like < 93) {
+    temperatureMessage =
+      "It's really hot out here.Would be good weather for a pair of cute shorts and a nice shirt. ";
+  } else {
+    temperatureMessage =
+      "It's crazy hot out here, stay hydrated. Keep some water on hand. If you can make it to water grab a swimsuit and go swimming, if you're not as lucky a cute sundress will help you out. ";
+  }
 
   return (
-    <Card style={{ backgroundColor: "whitesmoke" }}>
+    <Card style={{ backgroundColor: "#e6e6e6" }}>
       <Row>
         <Col>
           <Card.Body>
-            <Card.Title>{props.dt}</Card.Title>
-            <Card.Subtitle>
+            <Card.Title>{d.toDateString()} </Card.Title>
+            <Card.Subtitle>{d.toTimeString()}</Card.Subtitle>
+            <br></br>
+            <Card.Text>
               {props.main}, feels like {props.feels_like} °F
-            </Card.Subtitle>
+            </Card.Text>
             <Card.Text> {props.des}</Card.Text>
           </Card.Body>
 
@@ -297,7 +298,10 @@ function WeatherCard(props) {
             </Col>
           </Row>
           <Row>
-            <Col>{props.pop > 0.5 && <Card.Text>{rainMessage}</Card.Text>}</Col>
+            <Col>
+              {temperatureMessage}
+              {props.pop > 0.5 && <Card.Text>{rainMessage}</Card.Text>}
+            </Col>
           </Row>
         </Col>
         <Col>
@@ -332,6 +336,7 @@ function WeatherCard(props) {
 }
 
 function Search({ query }) {
+  console.log("test");
   const [inputQuery, setInputQuery] = useState(query || "");
   const [city, setCity] = useState([]);
   const history = useHistory();
@@ -373,7 +378,10 @@ function Search({ query }) {
         console.log(responseBody2.list[0]);
       }
     }
-    fetchSearchResults();
+
+    if (query) {
+      fetchSearchResults();
+    }
 
     return () => {
       controller.abort();
