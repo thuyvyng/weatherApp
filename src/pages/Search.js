@@ -4,9 +4,19 @@ import { useHistory } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import { css } from "@emotion/react";
 
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Jumbotron,
+} from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navigation from "../components/Navbar";
+
+var OW = "7caac9e6166772127226ad6470b80a57";
 
 function WeatherCard(props) {
   const d = new Date(props.dt);
@@ -55,11 +65,9 @@ function WeatherCard(props) {
     }
 
     .illustration {
-      position: relative;
       min-height: 790px;
       z-index: 1;
       margin: auto;
-      top: 0;
     }
 
     .head {
@@ -78,6 +86,7 @@ function WeatherCard(props) {
       width: 100%;
       height: 100%;
       top: 10%;
+      z-index: 1;
     }
 
     .face {
@@ -85,7 +94,6 @@ function WeatherCard(props) {
       width: 7vh;
       height: 4.25vh;
       border-radius: 0 0 6vh 6vh / 0 0 7.5vh 7.5vh;
-      //border: 0.25vh solid;
       border-top: none;
       z-index: 2;
       overflow: hidden;
@@ -156,7 +164,7 @@ function WeatherCard(props) {
     .neck {
       box-shadow: inset 0 1vh 0.3vh #483b5555;
       height: 3.5vh;
-      width: 2vh;
+      width: 2.4vh;
       top: 12.5vh;
       border-bottom-color: #f8d9c1;
       z-index: 1;
@@ -165,7 +173,7 @@ function WeatherCard(props) {
     .decoltee {
       border: 0.5vh solid white;
       border-top: 0;
-      z-index: 1;
+      z-index: 10;
       height: 8%;
       width: 27%;
       top: 15.5vh;
@@ -208,7 +216,7 @@ function WeatherCard(props) {
       z-index: 0;
     }
     .leg {
-      height: 10vh;
+      height: 5vh;
       width: 2.25vh;
       top: 50vh;
       border-radius: 2vh;
@@ -224,7 +232,7 @@ function WeatherCard(props) {
           to bottom,
           transparent 20%,
           white 20%,
-          white 25%,
+          white 15%,
           tomato 25%,
           tomato 27%,
           white 27%,
@@ -247,13 +255,16 @@ function WeatherCard(props) {
     }
   `;
 
+  var snowMessage = props.snow
+    ? "Woah snow? Better get some mittens for some snow angels."
+    : "";
   var rainMessage =
-    "It's likely that it's going to rain, might wanna bring an umbrella or rainjacket.";
+    "It's likely that it's going to rain, might wanna bring an umbrella or jacket.";
 
   var temperatureMessage = "";
   if (props.feels_like < 32) {
     temperatureMessage =
-      "Ooh! It's freezing out here -- make sure to bundle up. Wear a cool jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
+      "Ooh! It's freezing out here -- make sure to bundle up. Wear a cozy jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
   } else if (props.feels_like < 55) {
     temperatureMessage =
       "Pretty cold out here, so light layers will be your best friend. Put on some cute jeans, a long sleeve, and a cute jacket to top it off. ";
@@ -272,37 +283,50 @@ function WeatherCard(props) {
   }
 
   return (
-    <Card style={{ backgroundColor: "#e6e6e6" }}>
+    <Card style={{ backgroundColor: "#ffdde2" }}>
       <Row>
         <Col>
-          <Card.Body>
-            <Card.Title>{d.toDateString()} </Card.Title>
-            <Card.Subtitle>{d.toTimeString()}</Card.Subtitle>
-            <br></br>
-            <Card.Text>
-              {props.main}, feels like {props.feels_like} °F
-            </Card.Text>
-            <Card.Text> {props.des}</Card.Text>
-          </Card.Body>
+          <Container>
+            <Card.Body>
+              <Card.Title class="display-4">{d.toDateString()}</Card.Title>
+              <Card.Text class="lead">
+                <img
+                  src={`http://openweathermap.org/img/wn/${props.pic}@2x.png`}
+                />
+                {props.des}, feels like {props.feels_like} °F
+              </Card.Text>
+              <Row>
+                <Col> Current temp:</Col>
+                <Col> {props.temp_min} °F</Col>
+                <Col css={high}> </Col>
+              </Row>
+              <Row>
+                <Col> Lows & Highs:</Col>
+                <Col css={low}> {props.temp_min} °F</Col>
+                <Col css={high}> {props.temp_max} °F</Col>
+              </Row>
+              <Row>
+                <Col> Precipitation:</Col>
+                <Col>{props.pop * 100}% </Col>
+                <Col></Col>
+              </Row>
+              <Row>
+                <Col> Humidity:</Col>
+                <Col>{props.humidity}% </Col>
+                <Col></Col>
+              </Row>
 
-          <Row css={row}>
-            <Col css={low}> {props.temp_min} °F</Col>
-            <Col>{props.pop * 100}% Precipitation</Col>
-            <Col css={high}> {props.temp_max} °F</Col>
-          </Row>
-          <Row css={row}>
-            <Col>
-              <img
-                src={`http://openweathermap.org/img/wn/${props.pic}@2x.png`}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              {temperatureMessage}
-              {props.pop > 0.5 && <Card.Text>{rainMessage}</Card.Text>}
-            </Col>
-          </Row>
+              <br></br>
+              <Row>
+                <Col>
+                  <p class="lead"> What would Cher wear?</p>
+                  {temperatureMessage}
+                  {snowMessage}
+                  {props.pop > 0.5 && <Card.Text>{rainMessage}</Card.Text>}
+                </Col>
+              </Row>
+            </Card.Body>
+          </Container>
         </Col>
         <Col>
           <div css={styles}>
@@ -317,7 +341,7 @@ function WeatherCard(props) {
                     <div class="lips"></div>
                   </div>
                   <div class="neck body"></div>
-                  <div class="decoltee body"></div>
+                  <div class="decoltee"></div>
                 </div>
                 <div class="dress"></div>
                 <div class="trapeze">
@@ -336,7 +360,6 @@ function WeatherCard(props) {
 }
 
 function Search({ query }) {
-  console.log("test");
   const [inputQuery, setInputQuery] = useState(query || "");
   const [city, setCity] = useState([]);
   const history = useHistory();
@@ -363,7 +386,6 @@ function Search({ query }) {
       try {
         const res = await fetch(
           `https://api.openweathermap.org/data/2.5/forecast?lat=${responseBody[0].lat}&lon=${responseBody[0].lon}&appid=${OW}&units=imperial`,
-          // `https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${OW}&units=imperial`,
           { signal: controller.signal }
         );
         responseBody2 = await res.json();
@@ -390,7 +412,7 @@ function Search({ query }) {
   }, [query]);
 
   return (
-    <>
+    <div>
       <Navigation />
       <Container>
         <br></br>
@@ -423,21 +445,24 @@ function Search({ query }) {
             {city.slice(0, 1).map((city) => {
               return (
                 <WeatherCard
+                  temp={city.main.temp}
                   temp_min={city.main.temp_min}
                   temp_max={city.main.temp_max}
                   feels_like={city.main.feels_like}
+                  humidity={city.main.humidity}
                   dt={city.dt_txt}
                   pop={city.pop}
                   main={city.weather[0].main}
                   des={city.weather[0].description}
                   pic={city.weather[0].icon}
+                  snow={city.snow}
                 />
               );
             })}
           </Col>
         </Row>
       </Container>
-    </>
+    </div>
   );
 }
 

@@ -6,12 +6,10 @@ export default function Navigation() {
     <Navbar bg="dark" variant="dark">
       <Navbar.Brand href="/">What Would Cher Wear? </Navbar.Brand>
       <Nav className="mr-auto">
-        <Nav.Link href="https://github.com/osu-cs499-w21/assignment-3-thuyvyng">
+        <Nav.Link href="https://github.com/thuyvyng/weatherApp">
           Github
         </Nav.Link>
-        <Nav.Link href="https://openweathermap.org/">
-          OpenWeatherMap API
-        </Nav.Link>
+        <Nav.Link href="/about">About</Nav.Link>
       </Nav>
     </Navbar>
   );
