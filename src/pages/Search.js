@@ -4,15 +4,7 @@ import { useHistory } from "react-router-dom";
 import fetch from "isomorphic-unfetch";
 import { css } from "@emotion/react";
 
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  Card,
-  Jumbotron,
-} from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navigation from "../components/Navbar";
 
@@ -28,9 +20,65 @@ function WeatherCard(props) {
     color: red;
   `;
 
-  const row = css`
-    text-align: center;
-  `;
+  var weatherMessage = "";
+  var weatherBackground = "";
+
+  if (props.snow) {
+    weatherMessage = "Woah snow? Better get some mittens for some snow angels.";
+    weatherBackground =
+      "https://static.vecteezy.com/system/resources/previews/000/210/590/original/vector-christmas-snow-background.jpg";
+  } else if (props.pop > 0.4) {
+    weatherMessage =
+      "It's likely that it's going to rain, might wanna bring an umbrella or jacket.";
+    weatherBackground =
+      "https://static.vecteezy.com/system/resources/previews/009/639/565/original/stock-illustration-seamless-pattern-watercolor-drawing-raindrops-on-a-white-background-isolated-rain-of-blue-violet-turquoise-cute-watercolor-background-for-baby-wallpaper-textile-wrappers-vector.jpg";
+  } else {
+    weatherBackground =
+      "https://www.nikkisplate.com/wp-content/uploads/2022/08/Screen-Shot-2021-06-26-at-4.26.18-PM.png";
+  }
+
+  var temperatureMessage = "";
+  var sleeveLength = 0;
+  var color = "red";
+  var sleeveColor = "red";
+
+  if (props.feels_like < 32) {
+    temperatureMessage =
+      "Ooh! It's freezing out here -- make sure to bundle up. Wear a cozy jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
+    sleeveLength = 20;
+    sleeveColor = "pink";
+    color = "white";
+  } else if (props.feels_like < 55) {
+    temperatureMessage =
+      "Pretty cold out here, so light layers will be your best friend. Put on some cute jeans, a long sleeve, and a cute jacket to top it off. ";
+    sleeveColor = "#303336";
+    color = "#727a82";
+    sleeveLength = 20;
+  } else if (props.feels_like < 70) {
+    temperatureMessage =
+      "Not bad weather. Cute light sweater would be nice. Maybe pair it with a nice pair of pants or with a skirt and add some tights for extra warmth";
+    sleeveLength = 60;
+    color = "#800020";
+    sleeveColor = "#800020";
+  } else if (props.feels_like < 82) {
+    temperatureMessage =
+      "Nice weather. Maybe wear a nice dress or just cute skirt and a cute shirt.";
+    color = "#white";
+    sleeveColor = "#E1EEDD";
+    sleeveLength = 60;
+  } else if (props.feels_like < 93) {
+    temperatureMessage =
+      "It's really hot out here. Would be good weather for a pair of cute skirt and a nice shirt. ";
+    sleeveLength = 80;
+    sleeveColor = "#9DC08B";
+    color = "#9DC08B";
+  } else {
+    temperatureMessage =
+      "It's crazy hot out here, stay hydrated. Keep some water on hand. If you can make it to water grab a swimsuit and go swimming, if you're not as lucky a cute sundress will help you out. ";
+    sleeveLength = 100;
+    color = "red";
+    sleeveColor = "red";
+  }
 
   const styles = css`
     :root {
@@ -171,7 +219,7 @@ function WeatherCard(props) {
     }
 
     .decoltee {
-      border: 0.5vh solid white;
+      border: 0.7vh solid #f8d9c1;
       border-top: 0;
       z-index: 10;
       height: 8%;
@@ -180,7 +228,7 @@ function WeatherCard(props) {
       border-radius: 0 0 50% 50% / 0 0 100% 100%;
     }
     .dress {
-      background: red;
+      background: ${color};
       clip-path: polygon(30% 0%, 70% 0, 100% 100%, 0 100%);
       background-position: bottom center;
       background-size: 100% 2vh;
@@ -206,8 +254,20 @@ function WeatherCard(props) {
       transform-origin: right top;
       right: calc(50% + 2vh);
       transform: rotate(-60deg);
+      background-image: linear-gradient(
+        to right,
+        transparent ${sleeveLength}%,
+        ${sleeveColor} ${sleeveLength}%,
+        ${sleeveColor}
+      );
     }
     .arm-r {
+      background-image: linear-gradient(
+        to left,
+        transparent ${sleeveLength}%,
+        ${sleeveColor} ${sleeveLength}%,
+        ${sleeveColor}
+      );
       transform-origin: left top;
       left: calc(50% + 2vh);
       transform: rotate(60deg);
@@ -232,7 +292,7 @@ function WeatherCard(props) {
           to bottom,
           transparent 20%,
           white 20%,
-          white 15%,
+          white 25%,
           tomato 25%,
           tomato 27%,
           white 27%,
@@ -254,36 +314,8 @@ function WeatherCard(props) {
       transform: rotate(-5deg);
     }
   `;
-
-  var snowMessage = props.snow
-    ? "Woah snow? Better get some mittens for some snow angels."
-    : "";
-  var rainMessage =
-    "It's likely that it's going to rain, might wanna bring an umbrella or jacket.";
-
-  var temperatureMessage = "";
-  if (props.feels_like < 32) {
-    temperatureMessage =
-      "Ooh! It's freezing out here -- make sure to bundle up. Wear a cozy jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
-  } else if (props.feels_like < 55) {
-    temperatureMessage =
-      "Pretty cold out here, so light layers will be your best friend. Put on some cute jeans, a long sleeve, and a cute jacket to top it off. ";
-  } else if (props.feels_like < 70) {
-    temperatureMessage =
-      "Not bad weather. Cute light sweater would be nice. Maybe pair it with a nice pair of pants or with a skirt and add some tights for extra warmth";
-  } else if (props.feels_like < 83) {
-    temperatureMessage =
-      "Nice weather. Maybe wear a nice dress or just comfy pants and a cute shirt.";
-  } else if (props.feels_like < 93) {
-    temperatureMessage =
-      "It's really hot out here.Would be good weather for a pair of cute shorts and a nice shirt. ";
-  } else {
-    temperatureMessage =
-      "It's crazy hot out here, stay hydrated. Keep some water on hand. If you can make it to water grab a swimsuit and go swimming, if you're not as lucky a cute sundress will help you out. ";
-  }
-
   return (
-    <Card style={{ backgroundColor: "#ffdde2" }}>
+    <Card className="border-secondary">
       <Row>
         <Col>
           <Container>
@@ -321,14 +353,18 @@ function WeatherCard(props) {
                 <Col>
                   <p class="lead"> What would Cher wear?</p>
                   {temperatureMessage}
-                  {snowMessage}
-                  {props.pop > 0.5 && <Card.Text>{rainMessage}</Card.Text>}
+                  {<Card.Text>{weatherMessage}</Card.Text>}
                 </Col>
               </Row>
             </Card.Body>
           </Container>
         </Col>
-        <Col>
+        <Col
+          style={{
+            backgroundImage: `url(${weatherBackground})`,
+            backgroundSize: "100% 100%",
+          }}
+        >
           <div css={styles}>
             <div class="illustration">
               <div class="me">
