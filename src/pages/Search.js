@@ -39,45 +39,80 @@ function WeatherCard(props) {
 
   var temperatureMessage = "";
   var sleeveLength = 0;
-  var color = "red";
+  var topColor = "red";
   var sleeveColor = "red";
+  var dressLength = 22;
+  var bottomsColor = "#f8d9c1";
+  var shoeColor = "white";
+  var which = Math.floor(Math.random() * 2);
 
-  if (props.feels_like < 32) {
+  if (props.feels_like < 40) {
+    //purple combo or pink sweater over white
     temperatureMessage =
       "Ooh! It's freezing out here -- make sure to bundle up. Wear a cozy jacket, keep some gloves on hand, throw on some boots, and maybe add a cute beanie or scarf for a nice touch. ";
     sleeveLength = 20;
-    sleeveColor = "pink";
-    color = "white";
+    if (which === 1) {
+      topColor = "#bd7dbd"; //"white";
+      sleeveColor = "#ad5cad"; //"pink";
+      shoeColor = "purple";
+    } else {
+      topColor = "white";
+      sleeveColor = "pink"; //"pink";
+      shoeColor = "pink";
+    }
+
+    dressLength = 15;
+    bottomsColor = "#6F8FAF";
   } else if (props.feels_like < 55) {
+    //goth outfit
     temperatureMessage =
       "Pretty cold out here, so light layers will be your best friend. Put on some cute jeans, a long sleeve, and a cute jacket to top it off. ";
     sleeveColor = "#303336";
-    color = "#727a82";
+    bottomsColor = "black";
+    topColor = "#d2d4d2";
     sleeveLength = 20;
+    dressLength = 15;
+    shoeColor = "grey";
   } else if (props.feels_like < 70) {
+    //purple pants and white shirt
     temperatureMessage =
-      "Not bad weather. Cute light sweater would be nice. Maybe pair it with a nice pair of pants or with a skirt and add some tights for extra warmth";
+      "Not bad weather. Cute light shirt would be nice. Maybe pair it with a nice pair of fun pants or with a skirt and add some tights for extra warmth";
     sleeveLength = 60;
-    color = "#800020";
-    sleeveColor = "#800020";
-  } else if (props.feels_like < 82) {
+    topColor = "#FAF9F6";
+    sleeveColor = "#FAF9F6";
+    bottomsColor = "#ca97ca";
+    shoeColor = "#bd7dbd";
+    dressLength = 14;
+  } else if (props.feels_like < 88) {
     temperatureMessage =
       "Nice weather. Maybe wear a nice dress or just cute skirt and a cute shirt.";
-    color = "#white";
+    topColor = "#E1EEDD";
     sleeveColor = "#E1EEDD";
     sleeveLength = 60;
-  } else if (props.feels_like < 93) {
-    temperatureMessage =
-      "It's really hot out here. Would be good weather for a pair of cute skirt and a nice shirt. ";
-    sleeveLength = 80;
-    sleeveColor = "#9DC08B";
-    color = "#9DC08B";
+    dressLength = 22;
+    if (which === 1) {
+      topColor = "#E1EEDD";
+      sleeveColor = "#E1EEDD";
+      shoeColor = "#e6ffe6";
+    } else {
+      sleeveColor = "#9DC08B";
+      topColor = "#9DC08B";
+      shoeColor = "black";
+    }
   } else {
+    //Alaia Dress or Calvin Klein
     temperatureMessage =
-      "It's crazy hot out here, stay hydrated. Keep some water on hand. If you can make it to water grab a swimsuit and go swimming, if you're not as lucky a cute sundress will help you out. ";
+      "It's crazy hot out here, stay hydrated. Keep some water on hand. If you can make it to water grab a bikini and go to the pool, if you're not as lucky a cute dress will help you out. My favorites are my Alaia or Calvin Klein dresses. ";
     sleeveLength = 100;
-    color = "red";
+    if (which === 1) {
+      topColor = "red";
+      shoeColor = "red";
+    } else {
+      topColor = "white";
+      shoeColor = "pink";
+    }
     sleeveColor = "red";
+    dressLength = 22;
   }
 
   const styles = css`
@@ -228,11 +263,11 @@ function WeatherCard(props) {
       border-radius: 0 0 50% 50% / 0 0 100% 100%;
     }
     .dress {
-      background: ${color};
-      clip-path: polygon(30% 0%, 70% 0, 100% 100%, 0 100%);
+      background: ${topColor};
+      clip-path: polygon(35% 0%, 65% 0, 100% 100%, 0 100%);
       background-position: bottom center;
       background-size: 100% 2vh;
-      height: 22vh;
+      height: ${dressLength}vh;
       width: 11vh;
       top: 29.5vh;
       z-index: 1;
@@ -276,10 +311,11 @@ function WeatherCard(props) {
       z-index: 0;
     }
     .leg {
-      height: 5vh;
+      height: 10vh;
       width: 2.25vh;
-      top: 50vh;
+      top: 43vh;
       border-radius: 2vh;
+      background: ${bottomsColor};
       &:after {
         z-index: -1;
         content: "";
@@ -291,14 +327,9 @@ function WeatherCard(props) {
         background-image: linear-gradient(
           to bottom,
           transparent 20%,
-          white 20%,
-          white 25%,
-          tomato 25%,
-          tomato 27%,
-          white 27%,
-          white 60%,
-          teal 60%,
-          teal
+          transparent 70%,
+          ${shoeColor} 70%,
+          ${shoeColor}
         );
       }
     }
@@ -320,8 +351,8 @@ function WeatherCard(props) {
         <Col>
           <Container>
             <Card.Body>
-              <Card.Title class="display-4">{d.toDateString()}</Card.Title>
-              <Card.Text class="lead">
+              <Card.Title className="display-4">{d.toDateString()}</Card.Title>
+              <Card.Text className="lead">
                 <img
                   src={`http://openweathermap.org/img/wn/${props.pic}@2x.png`}
                 />
@@ -351,7 +382,7 @@ function WeatherCard(props) {
               <br></br>
               <Row>
                 <Col>
-                  <p class="lead"> What would Cher wear?</p>
+                  <p className="lead"> What would Cher wear?</p>
                   {temperatureMessage}
                   {<Card.Text>{weatherMessage}</Card.Text>}
                 </Col>
@@ -366,26 +397,26 @@ function WeatherCard(props) {
           }}
         >
           <div css={styles}>
-            <div class="illustration">
-              <div class="me">
-                <div class="head">
-                  <div class="hair"></div>
-                  <div class="face-up"></div>
-                  <div class="face body">
-                    <div class="eyes"></div>
-                    <div class="nose"></div>
-                    <div class="lips"></div>
+            <div className="illustration">
+              <div className="me">
+                <div className="head">
+                  <div className="hair"></div>
+                  <div className="face-up"></div>
+                  <div className="face body">
+                    <div className="eyes"></div>
+                    <div className="nose"></div>
+                    <div className="lips"></div>
                   </div>
-                  <div class="neck body"></div>
-                  <div class="decoltee"></div>
+                  <div className="neck body"></div>
+                  <div className="decoltee"></div>
                 </div>
-                <div class="dress"></div>
-                <div class="trapeze">
-                  <div class="arm arm-l body"></div>
-                  <div class="arm arm-r body"></div>
+                <div className="dress"></div>
+                <div className="trapeze">
+                  <div className="arm arm-l body"></div>
+                  <div className="arm arm-r body"></div>
                 </div>
-                <div class="leg leg-l body"></div>
-                <div class="leg leg-r body"></div>
+                <div className="leg leg-l body"></div>
+                <div className="leg leg-r body"></div>
               </div>
             </div>
           </div>
