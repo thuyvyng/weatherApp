@@ -8,8 +8,6 @@ import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navigation from "../components/Navbar";
 
-var OW = "7caac9e6166772127226ad6470b80a57";
-
 function WeatherCard(props) {
   const d = new Date(props.dt);
   const low = css`
